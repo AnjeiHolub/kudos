@@ -1,0 +1,28 @@
+.table {
+  background-color: #a0522d;
+  height: 500px;
+  margin: 50px;
+}
+
+.table .title {
+  text-align: center;
+}
+
+.kudos {
+  width: 100px;
+  height: 100px;
+  background-color: #fafafa;
+  margin: 10px;
+  display: inline-block;
+  float: left;
+}
+
+.type {
+  float: left;
+}
+
+.remove {
+  float: right;
+  cursor: pointer;
+  padding: 10px;
+}

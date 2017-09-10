@@ -1,0 +1,26 @@
+.clearfix:after {
+  display: block;
+  content: '';
+  clear: both;
+}
+
+.container-app {
+      background-color: rgb(248, 248, 248);
+}
+
+.table-field {
+  width: 70%;
+  float: left;
+}
+
+.table {
+  background-color: #000;
+  height: 500px;
+  margin: 50px;
+}
+
+.tools-field {
+  width: 30%;
+  float: left;
+  height: 500px;
+}
