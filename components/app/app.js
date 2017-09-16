@@ -6,6 +6,8 @@
   let kudosDesk = window.kudosDesk;
   let kudosTools = window.kudosTools;
 
+  let kudosEdit = window.kudosEdit;
+
 
   let appKudosDesk = new kudosDesk({
     el: document.querySelector('.container-app'),
@@ -24,10 +26,17 @@
     }
   });
 
-  let appKudosTools = new kudosTools({
+  let appKudosEdit = new kudosEdit({
     el: document.querySelector('.container-app'),
     addItem (item) {
       appKudosDesk._addItem(item);
+    }
+  })
+
+  let appKudosTools = new kudosTools({
+    el: document.querySelector('.container-app'),
+    renderKudosEditArea (editKudos) {
+      appKudosEdit.renderKudosEditArea(editKudos);
     }
   })
 

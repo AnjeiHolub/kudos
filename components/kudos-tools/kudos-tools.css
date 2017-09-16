@@ -1,1 +1,24 @@
-kudos-tools.css
+.kudos-types {
+  padding: 20px;
+  background-color: #987;
+}
+
+.kudos-option {
+  float: left;
+  width: 100px;
+  height: 100px;
+  margin-right: 20px;
+  margin-bottom: 20px;
+}
+
+.kudos-thanks {
+  background-color: #435;
+}
+
+.kudos-happy {
+  background-color: #678;
+}
+
+.kudos-goodwork {
+  background-color: #345;
+}

@@ -2,10 +2,10 @@
   'use strict';
 
   class kudosTools {
-    constructor ({el, addItem}) {
+    constructor ({el, renderKudosEditArea}) {
       this.el = el;
       this._onClick = this._onClick.bind(this);
-      this._addItem = addItem;
+      this._renderKudosEditArea = renderKudosEditArea;
 
       this.toolsField = el.querySelector('.tools-field');
 
@@ -21,6 +21,11 @@
     render () {
 
       this.toolsField.innerHTML = `<div class="tools">
+                                    <div class="kudos-types clearfix">
+                                      <div class="kudos-option kudos-thanks" data-action="select"></div>
+                                      <div class="kudos-option kudos-happy" data-action="select"></div>
+                                      <div class="kudos-option kudos-goodwork" data-action="select"></div>
+                                    </div>
                                     <form class="form">
                                       <input type="text" />
                                       <textarea name="lol" id="lol" cols="30" rows="10"></textarea>
@@ -39,16 +44,16 @@
       let item = event.target;
 
       switch (item.dataset.action) {
-        case 'add':
-          this._onAddClick(item);
+        case 'select':
+          this._onClickSelect(item);
           break;
       } 
     }
 
-    _onAddClick (item) {
-      let dataItem = {type: this.form.querySelector('input').value, content: this.form.querySelector('textarea').value};
-      this.form.reset();
-      this._addItem(dataItem); 
+    _onClickSelect(item) {
+      let editKudos = {className: item.className};
+
+      this._renderKudosEditArea(editKudos);
     }
   }
 
