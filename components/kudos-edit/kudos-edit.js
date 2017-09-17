@@ -2,18 +2,22 @@
   'use strict';
 
   class kudosEdit {
-    constructor ({el, addItem}) {
+    constructor ({el, addItem, addReadyItem}) {
       this.el = el;
       this._onClick = this._onClick.bind(this);
-      this._onFocus = this._onFocus.bind(this);
       this._onEntryHead = this._onEntryHead.bind(this);
+      this._onKeyPress = this._onKeyPress.bind(this);
 
       this.editField = el.querySelector('.edit-field');
       this._addItem = addItem;
+      this._addReadyItem = addReadyItem;
+
+      this.editKudos;
 
 
       this.render();
 
+      this.form = el.querySelector('.form');
       this.editArea = el.querySelector('.edit-area');
 
       this._initEvents();
@@ -21,21 +25,28 @@
     }
 
     renderKudosEditArea (editKudos) {
+
+      this.editKudos = editKudos;
       let kudos = document.createElement('div');
       kudos.className = editKudos.className;
+      kudos.classList.add('kudos-edit');
 
       kudos.innerHTML = `<h3 class="head"></h3>
                         <span class="remove" data-action="remove">X</span>
                         <p class="content"></p>`
       this.editArea.appendChild(kudos);
-      this.switchEditor(kudos);
+      this.switchEditor();
 
     }
 
-    switchEditor (kudos) {
-      if (kudos.className) {
+    switchEditor () {
+      let kudos = this.editArea.querySelector('.kudos-option')
+      if (kudos) {
         this.editField.style.zIndex = '1';
         this.editField.style.opacity = '1';
+      } else {
+        this.editField.style.zIndex = '-1';
+        this.editField.style.opacity = '0';
       }
     }
 
@@ -45,16 +56,21 @@
                                     </div>
                                     <form class="form">
                                       <input type="text" />
-                                      <textarea name="lol" id="lol" cols="30" rows="10"></textarea>
                                       <button data-action="add">Сохранить</button>
                                     </form>
                                   </div>`;
     }
 
+    close () {
+      this.form.reset();
+      this.editArea.innerHTML = '';
+      this.switchEditor();
+      
+    }
+
     _initEvents () {
       this.el.addEventListener('click', this._onClick);
-      this.el.addEventListener('focus', this._onFocus, true);
-      this.el.addEventListener('keypress', this._onEntryHead);
+      this.el.addEventListener('keypress', this._onKeyPress);
     }
 
     _onClick (event) {
@@ -69,22 +85,7 @@
       }
     }
 
-    _onFocus (event) {
-      event.preventDefault();
-
-      let item = event.target;
-
-      switch (item.tagName) {
-        case 'INPUT':
-          this._onEntryHead(item);
-          break;
-        case 'TEXTAREA':
-          this._onEntryContent(item);
-          break;
-      } 
-    }
-
-    _onKeyPress(event) {
+    _onEntryHead(event) {
       if (event.which == null) { // IE
         if (event.keyCode < 32) return null; // спец. символ
         return String.fromCharCode(event.keyCode)
@@ -99,14 +100,15 @@
     }
 
     _onAddClick (item) {
-      let dataItem = {type: this.form.querySelector('input').value, content: this.form.querySelector('textarea').value};
-      this.form.reset();
-      this._addItem(dataItem); 
+      this.editKudos.type = this.editArea.querySelector('.head').innerHTML;
+      this.close();
+      this._addItem(this.editKudos);
+      this._addReadyItem(this.editKudos);  
     }
 
-    _onEntryHead (item) {
+    _onKeyPress (item) {
       console.log(this.editArea);
-      this.editArea.querySelector('.head').innerHTML += this._onKeyPress(event);
+      this.editArea.querySelector('.head').innerHTML += this._onEntryHead(event);
 
     }
   }

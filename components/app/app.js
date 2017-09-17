@@ -8,6 +8,8 @@
 
   let kudosEdit = window.kudosEdit;
 
+  let kudosTextEditor = window.kudosTextEditor;
+
 
   let appKudosDesk = new kudosDesk({
     el: document.querySelector('.container-app'),
@@ -16,22 +18,19 @@
       items: [
         {
           type: 'Cześć',
-          content: 'Wiktorowi kudos'
+          content: 'Wiktorowi kudos',
+          className: 'kudos-happy'
         },
         {
           type: 'Lalalala',
-          content: 'Dzięki'
+          content: 'Dzięki',
+          className: 'kudos-goodwork'
         }
       ]
     }
   });
 
-  let appKudosEdit = new kudosEdit({
-    el: document.querySelector('.container-app'),
-    addItem (item) {
-      appKudosDesk._addItem(item);
-    }
-  })
+
 
   let appKudosTools = new kudosTools({
     el: document.querySelector('.container-app'),
@@ -40,7 +39,20 @@
     }
   })
 
+  let appKudosEdit = new kudosEdit({
+    el: document.querySelector('.container-app'),
+    addItem (item) {
+      appKudosDesk._addItem(item);
+    },
+    addReadyItem (item) {
+      appKudosTools._addReadyItem(item);
+    }
+  })
 
+  let appKudosTextEditor = new kudosTextEditor ({
+    el: document.querySelector('.container-app')
+
+  })
 
 })();
 

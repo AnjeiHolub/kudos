@@ -21,7 +21,7 @@
 
       function getRenderKudos (data) {
         return data.items.map(function(item, index) {
-          return `<div class="kudos" data-index="${index}">
+          return `<div class="kudos ${item.className}" data-index="${index}">
                     <h3 class="type">${item.type}</h3>
                     <span class="remove" data-action="remove">X</span>
                     <p class="content">${item.content}</p>

@@ -1,6 +1,7 @@
 .kudos-types {
   padding: 20px;
   background-color: #987;
+  margin-bottom: 30px;
 }
 
 .kudos-option {
@@ -21,4 +22,14 @@
 
 .kudos-goodwork {
   background-color: #345;
+}
+
+.area-ready-kudos {
+  width: 102px;
+  height: 102px;
+  border: 1px dashed blue;
+}
+
+.area-ready-kudos .kudos-option {
+  margin: 1px;
 }
