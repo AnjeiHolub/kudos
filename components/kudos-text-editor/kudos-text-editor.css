@@ -1,0 +1,12 @@
+.input-text-editor {
+  width: 100px;
+  background: none;
+  color: white;
+  border: none;
+  box-shadow: none;
+  border-bottom: 1px solid white;
+}
+
+.input-text-editor:focus {
+  outline: 0;
+}

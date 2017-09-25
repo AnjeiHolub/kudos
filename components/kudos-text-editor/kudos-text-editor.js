@@ -4,49 +4,76 @@
 
 
     class kudosTextEditor {
-      constructor ({el}) {
+      constructor ({el, workingArea}) {
 
         this.el = el;
-        
+        this.workingArea = workingArea;
         this._onClick = this._onClick.bind(this);
+        this._onFocusOut = this._onFocusOut.bind(this);
+        this.editInput;
         this._initEvents();
+
+        this.coordsEditArea = this.getCoordsElement(this.workingArea);
       }
 
-      _initEvents () {
+      _initEvents() {
         this.el.addEventListener('click', this._onClick);
+        this.el.addEventListener('focusout', this._onFocusOut);
       }
 
-      _onClick (event) {
+      _onClick(event) {
         let target = event.target;
 
-        this._checkIsEditArea();
-
-        if (target == this.editArea) {
+        if (target == this.workingArea) {
           this._onAddClick(event);
 
         }
       }
 
-      _checkIsEditArea () {
-        if (this.el.querySelector('.kudos-edit')) {
-          this.editArea = this.el.querySelector('.kudos-edit');
-          this.coordsEditArea = this.getCoords(this.editArea);
+      _onAddClick(event) {
+        let input = document.createElement('input');
+        input.style.position = 'absolute';
+        input.style.top = event.pageY + 'px';
+        input.style.left = event.pageX + 'px';
+        input.style.zIndex = '9999';
+        input.classList.add('input-text-editor');
+        this.workingArea.appendChild(input);
+        input.focus();
+      }
+
+      _onFocusOut(event) {
+        let target = event.target;
+        if (target.classList.contains('input-text-editor')) {
+          this.addTypedText(target);
         }
-        
       }
 
-      _onAddClick (event) {
-        console.log(event.pageX+':'+event.pageY);
+      addTypedText(target) {
+        let typedText =  document.createElement('p');
+        typedText.innerHTML = target.value;
+        typedText.style.position = 'absolute';
+        typedText.style.top = this.getCoordsEditInput(target).top + 'px';
+        typedText.style.left = this.getCoordsEditInput(target).left + 'px';
+        typedText.classList.add('content');
+        this.workingArea.appendChild(typedText);
+        this.workingArea.replaceChild(typedText, target);
       }
 
-      getCoords(elem) { 
-        var box = elem.getBoundingClientRect();
+      getCoordsElement(elem) { 
+        let box = elem.getBoundingClientRect();
 
         return {
           top: box.top + pageYOffset,
           left: box.left + pageXOffset
         };
 
+      }
+
+      getCoordsEditInput(elem) {
+        return {
+          top: parseInt(elem.style.top, 10)- this.coordsEditArea.top,
+          left: parseInt(elem.style.left, 10) - this.coordsEditArea.left
+        }
       }
     }
 

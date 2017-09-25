@@ -19,6 +19,7 @@
 
       this.form = el.querySelector('.form');
       this.editArea = el.querySelector('.edit-area');
+      this.editKudosArea = el.querySelector('.kudos-edit');
 
       this._initEvents();
 
@@ -27,21 +28,13 @@
     renderKudosEditArea (editKudos) {
 
       this.editKudos = editKudos;
-      let kudos = document.createElement('div');
-      kudos.className = editKudos.className;
-      kudos.classList.add('kudos-edit');
-
-      kudos.innerHTML = `<h3 class="head"></h3>
-                        <span class="remove" data-action="remove">X</span>
-                        <p class="content"></p>`
-      this.editArea.appendChild(kudos);
+      this.editKudosArea.className = editKudos.className;
       this.switchEditor();
 
     }
 
     switchEditor () {
-      let kudos = this.editArea.querySelector('.kudos-option')
-      if (kudos) {
+      if (this.editField.style.opacity == '0') {
         this.editField.style.zIndex = '1';
         this.editField.style.opacity = '1';
       } else {
@@ -53,6 +46,11 @@
     render () {
       this.editField.innerHTML = `<div class="edit">
                                     <div class="edit-area clearfix">
+                                      <div class="kudos-edit">
+                                        <h3 class="head"></h3>
+                                        <span class="remove" data-action="remove">X</span>
+                                        <p class="content"></p>
+                                      </div>
                                     </div>
                                     <form class="form">
                                       <input type="text" />
@@ -107,7 +105,6 @@
     }
 
     _onKeyPress (item) {
-      console.log(this.editArea);
       this.editArea.querySelector('.head').innerHTML += this._onEntryHead(event);
 
     }

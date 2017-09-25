@@ -50,7 +50,8 @@
   })
 
   let appKudosTextEditor = new kudosTextEditor ({
-    el: document.querySelector('.container-app')
+    el: document.querySelector('.container-app'),
+    workingArea: document.querySelector('.kudos-edit')
 
   })
 
