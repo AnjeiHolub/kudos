@@ -6,18 +6,18 @@
       this.el = el;
       this._onClick = this._onClick.bind(this);
       this._renderKudosEditArea = renderKudosEditArea;
-
       this.toolsField = el.querySelector('.tools-field');
       this.readyKudos;
-
       this.render();
-
       this.tools = el.querySelector('.tools');
       this.form = this.tools.querySelector('.form');
-
       this._initEvents();
 
     }
+
+    /**
+     * Dodanie elementów do drzewa DOM
+     */
 
     render () {
 
@@ -46,9 +46,17 @@
                                   </div>`;
     }
 
+    /**
+     * Podpięcie nasłuchiwaczy eventów
+     */
+
     _initEvents () {
       this.el.addEventListener('click', this._onClick);
     }
+
+    /**
+     * Metoda przetwarzania eventu 'click'
+     */
 
     _onClick (event) {
       event.preventDefault();
@@ -62,11 +70,19 @@
       } 
     }
 
+    /**
+     * Wybór opcji elementu do edycji
+     */
+
     _onClickSelect(item) {
       let editKudos = {className: item.className};
 
       this._renderKudosEditArea(editKudos);
     }
+
+    /**
+     * Dodanie gotowego elementu po edycji *import*
+     */
 
     _addReadyItem (item) {
       this.readyKudos = item;

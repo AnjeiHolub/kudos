@@ -2,46 +2,51 @@
   'use strict';
 
   class kudosEdit {
-    constructor ({el, addItem, addReadyItem}) {
+    constructor ({el, addReadyItem}) {
       this.el = el;
       this._onClick = this._onClick.bind(this);
-      this._onEntryHead = this._onEntryHead.bind(this);
-      this._onKeyPress = this._onKeyPress.bind(this);
-
       this.editField = el.querySelector('.edit-field');
-      this._addItem = addItem;
       this._addReadyItem = addReadyItem;
-
       this.editKudos;
-
-
+      this.switchEditor();
       this.render();
-
       this.form = el.querySelector('.form');
       this.editArea = el.querySelector('.edit-area');
       this.editKudosArea = el.querySelector('.kudos-edit');
-
       this._initEvents();
 
     }
 
-    renderKudosEditArea (editKudos) {
+    /**
+     * Fukcja przetwarzania edycji wybranego elementu *import*
+     */
 
+    renderKudosEditArea (editKudos) {
       this.editKudos = editKudos;
       this.editKudosArea.className = editKudos.className;
+      this.editKudosArea.classList.add('kudos-edit');
       this.switchEditor();
-
     }
+
+    /**
+     * Przełącznik wyświetlenia obszaru edycji elementów
+     */
 
     switchEditor () {
-      if (this.editField.style.opacity == '0') {
-        this.editField.style.zIndex = '1';
-        this.editField.style.opacity = '1';
+      if (this.editField.classList.contains('edit-field-show')) {
+        this.editField.classList.remove('edit-field-show');
+        this.editField.classList.add('edit-field-hidden');
+      } else if (this.editField.classList.contains('edit-field-hidden')) {
+        this.editField.classList.add('edit-field-show');
+        this.editField.classList.remove('edit-field-hidden');
       } else {
-        this.editField.style.zIndex = '-1';
-        this.editField.style.opacity = '0';
+        this.editField.classList.add('edit-field-hidden');
       }
     }
+
+    /**
+     * Dodanie obszaru edycji elemntów do drzewa DOM
+     */
 
     render () {
       this.editField.innerHTML = `<div class="edit">
@@ -49,27 +54,34 @@
                                       <div class="kudos-edit">
                                         <h3 class="head"></h3>
                                         <span class="remove" data-action="remove">X</span>
-                                        <p class="content"></p>
                                       </div>
                                     </div>
                                     <form class="form">
-                                      <input type="text" />
                                       <button data-action="add">Сохранить</button>
                                     </form>
                                   </div>`;
     }
 
+    /**
+     * Zamknięcie obszaru edycji
+     */
+
     close () {
-      this.form.reset();
       this.editArea.innerHTML = '';
       this.switchEditor();
-      
     }
+
+    /**
+     * Podpięcie nasłuchiwaczy eventów
+     */
 
     _initEvents () {
       this.el.addEventListener('click', this._onClick);
-      this.el.addEventListener('keypress', this._onKeyPress);
     }
+
+    /**
+     * Metoda przetwarzania eventu 'click'
+     */
 
     _onClick (event) {
       event.preventDefault();
@@ -83,31 +95,32 @@
       }
     }
 
-    _onEntryHead(event) {
-      if (event.which == null) { // IE
-        if (event.keyCode < 32) return null; // спец. символ
-        return String.fromCharCode(event.keyCode)
-      }
-
-      if (event.which != 0 && event.charCode != 0) { // все кроме IE
-        if (event.which < 32) return null; // спец. символ
-        return String.fromCharCode(event.which); // остальные
-      }
-
-      return null; // спец. символ
-    }
+    /**
+     * Metoda dadonia elementu do tablicy
+     */
 
     _onAddClick (item) {
-      this.editKudos.type = this.editArea.querySelector('.head').innerHTML;
+      this.editKudos.fieldsContent = this._handelContentEditKudos();
       this.close();
-      this._addItem(this.editKudos);
       this._addReadyItem(this.editKudos);  
     }
 
-    _onKeyPress (item) {
-      this.editArea.querySelector('.head').innerHTML += this._onEntryHead(event);
+    /**
+     * Przetwarzanie zawartości wyedytowanego kudosa w dane
+     */
 
+    _handelContentEditKudos () {
+      let contents = this.editKudosArea.querySelectorAll('.content');
+      return Array.prototype.map.call(contents, function (item) {
+        return {
+          content: item.innerHTML,
+          top: item.offsetTop,
+          left: item.offsetLeft
+        };
+      });
     }
+
+    
   }
 
 

@@ -10,6 +10,9 @@
 
   let kudosTextEditor = window.kudosTextEditor;
 
+  /**
+   * Stworzenie komponentu tablicy z kudosami
+   */
 
   let appKudosDesk = new kudosDesk({
     el: document.querySelector('.container-app'),
@@ -30,7 +33,9 @@
     }
   });
 
-
+  /**
+   * Stworzenie komponentu narzędzi serwisu
+   */
 
   let appKudosTools = new kudosTools({
     el: document.querySelector('.container-app'),
@@ -39,19 +44,24 @@
     }
   })
 
+  /**
+   * Stworzenie komponentu - obszar do edycji
+   */
+
   let appKudosEdit = new kudosEdit({
     el: document.querySelector('.container-app'),
-    addItem (item) {
-      appKudosDesk._addItem(item);
-    },
     addReadyItem (item) {
       appKudosTools._addReadyItem(item);
     }
   })
 
+  /**
+   * Stworzenie komponentu do edycji tekstu
+   */
+
   let appKudosTextEditor = new kudosTextEditor ({
     el: document.querySelector('.container-app'),
-    workingArea: document.querySelector('.kudos-edit')
+    workingArea: document.querySelector('.edit-area .kudos-edit')
 
   })
 

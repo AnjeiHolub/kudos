@@ -17,6 +17,10 @@
 
     }
 
+    /**
+     * Dodanie elementów do drzewa DOM
+     */
+
     render () {
 
       function getRenderKudos (data) {
@@ -36,9 +40,17 @@
                                   </div>`;
     }
 
+    /**
+     * Podpięcie nasłuchiwaczy eventów
+     */
+
     _initEvents () {
       this.el.addEventListener('click', this._onClick);
     }
+
+    /**
+     * Metoda przetwarzania eventu 'click'
+     */
 
     _onClick (event) {
       event.preventDefault();
@@ -52,10 +64,18 @@
       }
     }
 
+    /**
+     * Dodanie elementu do danych
+     */
+
     _addItem (item) {
       this.data.items.push(item);
       this.render();
     }
+
+    /**
+     * Funkcja przetwarzania akcji 'remove' (usunięcia) elementu
+     */
 
     _onRemoveClick (item) {
       let target = item;
@@ -67,6 +87,10 @@
         target = target.parentNode;
       }
     }
+
+    /**
+     * Usunięcie elementu z danych
+     */
 
     _removeItem (index) {
       this.data.items.splice(index, 1);
