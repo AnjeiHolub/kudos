@@ -3,12 +3,21 @@
 
 
   //import 
+  let kudosApp = window.kudosApp;
   let kudosDesk = window.kudosDesk;
   let kudosTools = window.kudosTools;
 
   let kudosEdit = window.kudosEdit;
 
   let kudosTextEditor = window.kudosTextEditor;
+
+  /**
+   * Stworzenie komponentu aplickacji kudosów
+   */
+
+  let appKudosApp = new kudosApp({
+    el: document.querySelector('.container-app')
+  });
 
   /**
    * Stworzenie komponentu tablicy z kudosami

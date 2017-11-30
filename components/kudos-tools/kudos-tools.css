@@ -32,4 +32,9 @@
 
 .area-ready-kudos .kudos-option {
   margin: 1px;
+  position: relative;
+}
+
+.area-ready-kudos .kudos-option .content {
+  position: absolute;
 }

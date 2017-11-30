@@ -96,7 +96,7 @@
     }
 
     /**
-     * Metoda dadonia elementu do tablicy
+     * Metoda dodania elementu do tablicy
      */
 
     _onAddClick (item) {
@@ -114,8 +114,8 @@
       return Array.prototype.map.call(contents, function (item) {
         return {
           content: item.innerHTML,
-          top: item.offsetTop,
-          left: item.offsetLeft
+          top: item.offsetTop/3,
+          left: item.offsetLeft/3
         };
       });
     }

@@ -8,7 +8,6 @@
 
         this.el = el;
         this.workingArea = workingArea;
-        console.log(this.workingArea);
         this._onClick = this._onClick.bind(this);
         this._onFocusOut = this._onFocusOut.bind(this);
         this._onEntryHead = this._onEntryHead.bind(this);
@@ -50,11 +49,10 @@
         input.classList.add('input-text-editor');
         this.workingArea.appendChild(input);
         input.style.position = 'absolute';
-        input.style.top = event.pageY - input.offsetHeight/2 + 'px';
-        input.style.left = event.pageX + 'px';
+        input.style.top = event.pageY - input.getBoundingClientRect().top + input.offsetHeight/2 + 'px';
+        input.style.left = event.pageX - input.getBoundingClientRect().left + 'px';
         input.style.zIndex = '9999';
         this.inputTextEditor = input;
-        
         input.focus();
       }
 

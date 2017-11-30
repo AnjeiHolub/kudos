@@ -22,12 +22,19 @@
     render () {
 
       function getReadyKudos (item) {
+
+        function getContentItem (fieldsContent) {
+          return fieldsContent.map(function(item) {
+            return `<p class="content" style="top: ${item.top}px; left: ${item.left}px">${item.content}</p>`
+                  }).join('');
+        }
+
+        console.log(item);
         if (item) {
-          return `<div class="kudos ${item.className}">
-                  <h3 class="type">${item.type}</h3>
-                  <span class="remove" data-action="remove">X</span>
-                  <p class="content">${item.content}</p>
-                </div>`;
+          return `<div class="kudos ${item.className}" data-action="attach">
+                    <span class="remove" data-action="remove">X</span>
+                    ${getContentItem(item.fieldsContent)}
+                  </div>`;
         } else {
           return  '';
         }
@@ -74,11 +81,11 @@
      * Wybór opcji elementu do edycji
      */
 
-    _onClickSelect(item) {
+    _onClickSelect (item) {
       let editKudos = {className: item.className};
-
       this._renderKudosEditArea(editKudos);
     }
+
 
     /**
      * Dodanie gotowego elementu po edycji *import*
