@@ -28,6 +28,14 @@
   width: 102px;
   height: 102px;
   border: 1px dashed blue;
+  display: inline-block;
+}
+
+.trash {
+  width: 102px;
+  height: 102px;
+  border: 1px dashed red;
+  display: inline-block;
 }
 
 .area-ready-kudos .kudos-option {

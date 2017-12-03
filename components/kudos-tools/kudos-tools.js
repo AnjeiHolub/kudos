@@ -7,7 +7,7 @@
       this._onClick = this._onClick.bind(this);
       this._renderKudosEditArea = renderKudosEditArea;
       this.toolsField = el.querySelector('.tools-field');
-      this.readyKudos;
+      this.data;
       this.render();
       this.tools = el.querySelector('.tools');
       this.form = this.tools.querySelector('.form');
@@ -29,15 +29,15 @@
                   }).join('');
         }
 
-        console.log(item);
         if (item) {
           return `<div class="kudos ${item.className}" data-action="attach">
-                    <span class="remove" data-action="remove">X</span>
                     ${getContentItem(item.fieldsContent)}
                   </div>`;
         } else {
           return  '';
         }
+
+
         
       }
 
@@ -47,10 +47,17 @@
                                       <div class="kudos-option kudos-happy" data-action="select"></div>
                                       <div class="kudos-option kudos-goodwork" data-action="select"></div>
                                     </div>
-                                    <div class="area-ready-kudos">
-                                      ${getReadyKudos(this.readyKudos)}
+                                    <div class="area-ready-kudos" data-status="tools">
+                                      ${getReadyKudos(this.data)}
+                                    </div>
+                                    <div class="trash" data-status="trash">
+                                      Trash
                                     </div>
                                   </div>`;
+      if (this.data) {
+        this.toolsField.querySelector('.kudos').data = this.data;
+      }
+      
     }
 
     /**
@@ -92,7 +99,16 @@
      */
 
     _addReadyItem (item) {
-      this.readyKudos = item;
+      this.data = item;
+      this.render();
+    }
+
+    /**
+     * Usunięcie elementu *import*
+     */
+
+    _removeReadyItem () {
+      this.data = null;
       this.render();
     }
   }

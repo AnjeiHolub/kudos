@@ -4,15 +4,15 @@
   class kudosEdit {
     constructor ({el, addReadyItem}) {
       this.el = el;
+      this.data = null;
       this._onClick = this._onClick.bind(this);
-      this.editField = el.querySelector('.edit-field');
+      this.editField = this.el.querySelector('.edit-field');
       this._addReadyItem = addReadyItem;
-      this.editKudos;
       this.switchEditor();
       this.render();
-      this.form = el.querySelector('.form');
-      this.editArea = el.querySelector('.edit-area');
-      this.editKudosArea = el.querySelector('.kudos-edit');
+      this.form = this.el.querySelector('.form');
+      this.editArea = this.el.querySelector('.edit-area');
+      this.editKudosArea;
       this._initEvents();
 
     }
@@ -23,8 +23,8 @@
 
     renderKudosEditArea (editKudos) {
       this.editKudos = editKudos;
-      this.editKudosArea.className = editKudos.className;
-      this.editKudosArea.classList.add('kudos-edit');
+      this.data = editKudos;
+      this.render();
       this.switchEditor();
     }
 
@@ -49,17 +49,26 @@
      */
 
     render () {
+
+      function getRenderKudos (data) {
+        if (data !== null) {
+          return `<div class="kudos kudos-edit ${data.className}">
+                  </div>`;
+        } else {
+          return `<div class="kudos kudos-edit">
+                  </div>`;
+        }
+      };
+
       this.editField.innerHTML = `<div class="edit">
                                     <div class="edit-area clearfix">
-                                      <div class="kudos-edit">
-                                        <h3 class="head"></h3>
-                                        <span class="remove" data-action="remove">X</span>
-                                      </div>
+                                      ${getRenderKudos(this.data)}
                                     </div>
                                     <form class="form">
                                       <button data-action="add">Сохранить</button>
                                     </form>
                                   </div>`;
+      this.editKudosArea = this.el.querySelector('.kudos-edit');
     }
 
     /**
@@ -100,9 +109,10 @@
      */
 
     _onAddClick (item) {
-      this.editKudos.fieldsContent = this._handelContentEditKudos();
+      this.data.fieldsContent = this._handelContentEditKudos();
       this.close();
-      this._addReadyItem(this.editKudos);  
+      console.log(this.data);
+      this._addReadyItem(this.data);  
     }
 
     /**

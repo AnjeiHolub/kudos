@@ -12,9 +12,9 @@
   width: 100px;
   height: 100px;
   background-color: #fafafa;
-  margin: 10px;
   display: inline-block;
   float: left;
+  position: absolute;
 }
 
 .type {
@@ -25,4 +25,8 @@
   float: right;
   cursor: pointer;
   padding: 10px;
+}
+
+.kudos .content {
+  position: absolute;
 }

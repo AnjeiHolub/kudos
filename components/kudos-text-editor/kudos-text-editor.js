@@ -4,10 +4,11 @@
 
 
     class kudosTextEditor {
-      constructor ({el, workingArea}) {
+      constructor ({el, selectorWorkingArea}) {
 
         this.el = el;
-        this.workingArea = workingArea;
+        this.selectorWorkingArea = selectorWorkingArea;
+        this.workingArea = document.querySelector(this.selectorWorkingArea);
         this._onClick = this._onClick.bind(this);
         this._onFocusOut = this._onFocusOut.bind(this);
         this._onEntryHead = this._onEntryHead.bind(this);
@@ -32,11 +33,22 @@
        */
 
       _onClick(event) {
+        this.prepareWorkingArea();
         let target = event.target;
-        if (target == this.workingArea) {
-
+        if (target === this.workingArea) {
           this._onAddClick(event);
 
+        }
+      }
+
+      /**
+       * Przygotowanie obszaru roboczego
+       */
+
+      prepareWorkingArea() {
+        let workingArea = document.querySelector(this.selectorWorkingArea);
+        if (this.workingArea !== workingArea) {
+          this.workingArea = workingArea;
         }
       }
 

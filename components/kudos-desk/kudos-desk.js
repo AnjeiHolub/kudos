@@ -24,20 +24,29 @@
     render () {
 
       function getRenderKudos (data) {
+
+        function getContentItem (fieldsContent) {
+          return fieldsContent.map(function(item) {
+            return `<p class="content" style="top: ${item.top}px; left: ${item.left}px">${item.content}</p>`
+                  }).join('');
+        }
+
         return data.items.map(function(item, index) {
-          return `<div class="kudos ${item.className}" data-index="${index}">
-                    <h3 class="type">${item.type}</h3>
-                    <span class="remove" data-action="remove">X</span>
-                    <p class="content">${item.content}</p>
+          return `<div class="kudos ${item.className}" data-index="${index}" data-action="attach" style="top: ${item.coordinates.top}px; left: ${item.coordinates.left}px">
+                    ${getContentItem(item.fieldsContent)}
                   </div>`
                 }).join('');
 
       };
 
-      this.tableField.innerHTML = `<div class="table">
+      this.tableField.innerHTML = `<div class="table" data-status="desk">
                                     <h2 class="title">${this.data.title}</h2>
                                     ${getRenderKudos(this.data)}
                                   </div>`;
+
+      this.tableField.querySelectorAll('.kudos').forEach((kudos, index) => {
+        kudos.data = this.data.items[index];
+      });
     }
 
     /**
@@ -56,20 +65,23 @@
       event.preventDefault();
 
       let item = event.target;
-
-      switch (item.dataset.action) {
-        case 'remove':
-          this._onRemoveClick(item);
-          break;
-      }
     }
 
     /**
-     * Dodanie elementu do danych
+     * Dodanie elementu do danych *import*
      */
 
     _addItem (item) {
-      this.data.items.push(item);
+      this.data.items.push(item.data);
+      this.render();
+    }
+
+    /**
+     * Jeżeli element został przeniesiony *import*
+     */ 
+
+    _moveItem (item, coordinates) {
+      this.data.items[item.dataset.index].coordinates = coordinates;
       this.render();
     }
 
@@ -92,8 +104,8 @@
      * Usunięcie elementu z danych
      */
 
-    _removeItem (index) {
-      this.data.items.splice(index, 1);
+    _removeItem (item) {
+      this.data.items.splice(item.dataset.index, 1);
       this.render();
     }
 

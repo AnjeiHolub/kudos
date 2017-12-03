@@ -11,13 +11,7 @@
 
   let kudosTextEditor = window.kudosTextEditor;
 
-  /**
-   * Stworzenie komponentu aplickacji kudosów
-   */
-
-  let appKudosApp = new kudosApp({
-    el: document.querySelector('.container-app')
-  });
+  
 
   /**
    * Stworzenie komponentu tablicy z kudosami
@@ -29,14 +23,32 @@
       title: 'kudosy',
       items: [
         {
-          type: 'Cześć',
-          content: 'Wiktorowi kudos',
-          className: 'kudos-happy'
+          className: 'kudos-happy',
+          fieldsContent: [
+            {
+              content: 'trololo',
+              top: 5,
+              left: 30
+            }
+          ],
+          coordinates: {
+            left: 250,
+            top: 180
+          }
         },
         {
-          type: 'Lalalala',
-          content: 'Dzięki',
-          className: 'kudos-goodwork'
+          className: 'kudos-goodwork',
+          fieldsContent: [
+            {
+              content: 'ololo',
+              top: 20,
+              left: 10
+            }
+          ],
+          coordinates: {
+            left: 120,
+            top: 300
+          }
         }
       ]
     }
@@ -52,6 +64,26 @@
       appKudosEdit.renderKudosEditArea(editKudos);
     }
   })
+
+  /**
+   * Stworzenie komponentu aplickacji kudosów
+   */
+
+  let appKudosApp = new kudosApp({
+    el: document.querySelector('.container-app'),
+    addItemKudosDesk: function (item) {
+      appKudosDesk._addItem(item);
+    },
+    moveItemKudosDesk: function (item, coordinates) {
+      appKudosDesk._moveItem(item, coordinates);
+    },
+    removeReadyItemKudosTools: function () {
+      appKudosTools._removeReadyItem();
+    },
+    removeItemKudosDesk: function (item) {
+      appKudosDesk._removeItem(item);
+    }
+  });
 
   /**
    * Stworzenie komponentu - obszar do edycji
@@ -70,7 +102,7 @@
 
   let appKudosTextEditor = new kudosTextEditor ({
     el: document.querySelector('.container-app'),
-    workingArea: document.querySelector('.edit-area .kudos-edit')
+    selectorWorkingArea: '.edit-area .kudos-edit'
 
   })
 
