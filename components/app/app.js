@@ -12,7 +12,13 @@
 
     let kudosTextEditor = window.kudosTextEditor;
 
+    /**
+     * Stworzenie komponentu, czyli moduł który odpowiada za komunikacje z bazą
+     * @type {any}
+     */
+
     let appKudosModel = new kudosModel();
+
     /**
      * Stworzenie komponentu tablicy z kudosami
      */
@@ -38,9 +44,6 @@
 
     let appKudosApp = new kudosApp({
         el: document.querySelector('.container-app'),
-        addItemKudosDesk: function (item) {
-            appKudosDesk._addItem(item);
-        },
         moveItemKudosDesk: function (item, coordinates) {
             appKudosDesk._moveItem(item, coordinates);
         },
@@ -71,10 +74,26 @@
         el: document.querySelector('.container-app'),
         selectorWorkingArea: '.edit-area .kudos-edit'
 
-    })
+    });
+
+    /**
+     * Zadeklorowanie "zdarzenia" ustawienia danych w aplikacji oraz akcji, która będzie wywołana (callback)
+     */
 
     appKudosModel.on('update', (data) => {
         appKudosDesk.setData(data);
+    });
+
+    /**
+     * Zadeklorowanie "zdarzenia" dodania kudosa do tablicy oraz akcji, która będzie wywołana (callback)
+     */
+
+    appKudosApp.on('add', (event) => {
+        let data = event.detail;
+        appKudosDesk._addItem(data);
+
+        appKudosModel.setData(appKudosDesk.getData());
+        appKudosModel.save();
     });
 
     appKudosModel.fetch();

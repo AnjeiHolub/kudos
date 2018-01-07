@@ -1,7 +1,6 @@
 (function () {
     'use strict';
 
-    let request = null;
     let resources = "https://kudos-f16.firebaseio.com/data.json";
 
 
@@ -10,9 +9,21 @@
             this._handlers = {};
         }
 
+        /**
+         * Metoda do ustawienia danych
+         * @param data
+         */
+
         setData (data) {
+            this.data = data;
             this.trigger('update', data);
         }
+
+        /**
+         * Metoda do deklarowania "zdarzeń" oraz wywoływanych akcji (callback)
+         * @param name
+         * @param cb
+         */
 
         on (name, cb) {
             if (!this._handlers[name]) {
@@ -22,6 +33,12 @@
             this._handlers[name].push(cb);
         }
 
+        /**
+         * Metoda do obsługi "zdarzeń"
+         * @param name
+         * @param data
+         */
+
         trigger (name, data) {
             if (this._handlers[name]) {
                 this._handlers[name].forEach((callback) => {
@@ -30,9 +47,25 @@
             }
         }
 
+        /**
+         * Metoda wysyła dane poprzez request
+         */
+
+        save () {
+            this._makeRequest('PUT', resources);
+        }
+
+        /**
+         * Metoda robi request do pobierania danych
+         */
+
         fetch () {
             this._makeRequest('GET', resources);
         }
+
+        /**
+         * Metoda zwraca obiekt requestu
+         */
 
         createRequest () {
             try {
@@ -50,8 +83,15 @@
             }
         }
 
+        /**
+         * Metoda robi request (pobiera lub wysyła dane)
+         * @param method
+         * @param resources
+         * @private
+         */
+
         _makeRequest (method, resources) {
-            console.log(method, resources);
+
             let xhr = this.createRequest();
             xhr.open(method, resources, true);
 
@@ -68,7 +108,11 @@
                 }
             });
 
-            xhr.send(null);
+            if (method === 'PUT') {
+                xhr.send(JSON.stringify(this.data));
+            } else {
+                xhr.send();
+            }
 
         }
     }

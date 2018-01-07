@@ -103,20 +103,27 @@
          * Usunięcie elementu z danych
          */
 
-        _removeItem(item) {
+        _removeItem (item) {
             this.data.items.splice(item.dataset.index, 1);
             this.render();
         }
 
         /**
-         * Ustawienie danych
+         * Metoda ustawienia danych
          */
 
-        setData(data) {
+        setData (data) {
             this.data = data;
             this.render();
         }
 
+        /**
+         * Metoda otrzymania danych
+         */
+
+        getData () {
+            return this.data;
+        }
     }
 
 
