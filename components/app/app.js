@@ -1,110 +1,83 @@
 (function () {
-  'use strict';
+    'use strict';
 
 
-  //import 
-  let kudosApp = window.kudosApp;
-  let kudosDesk = window.kudosDesk;
-  let kudosTools = window.kudosTools;
+    //import
+    let kudosModel = window.kudosModel;
+    let kudosApp = window.kudosApp;
+    let kudosDesk = window.kudosDesk;
+    let kudosTools = window.kudosTools;
 
-  let kudosEdit = window.kudosEdit;
+    let kudosEdit = window.kudosEdit;
 
-  let kudosTextEditor = window.kudosTextEditor;
+    let kudosTextEditor = window.kudosTextEditor;
 
-  
+    let appKudosModel = new kudosModel();
+    /**
+     * Stworzenie komponentu tablicy z kudosami
+     */
 
-  /**
-   * Stworzenie komponentu tablicy z kudosami
-   */
+    let appKudosDesk = new kudosDesk({
+        el: document.querySelector('.container-app')
+    });
 
-  let appKudosDesk = new kudosDesk({
-    el: document.querySelector('.container-app'),
-    data: {
-      title: 'kudosy',
-      items: [
-        {
-          className: 'kudos-happy',
-          fieldsContent: [
-            {
-              content: 'trololo',
-              top: 5,
-              left: 30
-            }
-          ],
-          coordinates: {
-            left: 250,
-            top: 180
-          }
-        },
-        {
-          className: 'kudos-goodwork',
-          fieldsContent: [
-            {
-              content: 'ololo',
-              top: 20,
-              left: 10
-            }
-          ],
-          coordinates: {
-            left: 120,
-            top: 300
-          }
+    /**
+     * Stworzenie komponentu narzędzi serwisu
+     */
+
+    let appKudosTools = new kudosTools({
+        el: document.querySelector('.container-app'),
+        renderKudosEditArea (editKudos) {
+            appKudosEdit.renderKudosEditArea(editKudos);
         }
-      ]
-    }
-  });
+    })
 
-  /**
-   * Stworzenie komponentu narzędzi serwisu
-   */
+    /**
+     * Stworzenie komponentu aplickacji kudosów
+     */
 
-  let appKudosTools = new kudosTools({
-    el: document.querySelector('.container-app'),
-    renderKudosEditArea (editKudos) {
-      appKudosEdit.renderKudosEditArea(editKudos);
-    }
-  })
+    let appKudosApp = new kudosApp({
+        el: document.querySelector('.container-app'),
+        addItemKudosDesk: function (item) {
+            appKudosDesk._addItem(item);
+        },
+        moveItemKudosDesk: function (item, coordinates) {
+            appKudosDesk._moveItem(item, coordinates);
+        },
+        removeReadyItemKudosTools: function () {
+            appKudosTools._removeReadyItem();
+        },
+        removeItemKudosDesk: function (item) {
+            appKudosDesk._removeItem(item);
+        }
+    });
 
-  /**
-   * Stworzenie komponentu aplickacji kudosów
-   */
+    /**
+     * Stworzenie komponentu - obszar do edycji
+     */
 
-  let appKudosApp = new kudosApp({
-    el: document.querySelector('.container-app'),
-    addItemKudosDesk: function (item) {
-      appKudosDesk._addItem(item);
-    },
-    moveItemKudosDesk: function (item, coordinates) {
-      appKudosDesk._moveItem(item, coordinates);
-    },
-    removeReadyItemKudosTools: function () {
-      appKudosTools._removeReadyItem();
-    },
-    removeItemKudosDesk: function (item) {
-      appKudosDesk._removeItem(item);
-    }
-  });
+    let appKudosEdit = new kudosEdit({
+        el: document.querySelector('.container-app'),
+        addReadyItem (item) {
+            appKudosTools._addReadyItem(item);
+        }
+    })
 
-  /**
-   * Stworzenie komponentu - obszar do edycji
-   */
+    /**
+     * Stworzenie komponentu do edycji tekstu
+     */
 
-  let appKudosEdit = new kudosEdit({
-    el: document.querySelector('.container-app'),
-    addReadyItem (item) {
-      appKudosTools._addReadyItem(item);
-    }
-  })
+    let appKudosTextEditor = new kudosTextEditor({
+        el: document.querySelector('.container-app'),
+        selectorWorkingArea: '.edit-area .kudos-edit'
 
-  /**
-   * Stworzenie komponentu do edycji tekstu
-   */
+    })
 
-  let appKudosTextEditor = new kudosTextEditor ({
-    el: document.querySelector('.container-app'),
-    selectorWorkingArea: '.edit-area .kudos-edit'
+    appKudosModel.on('update', (data) => {
+        appKudosDesk.setData(data);
+    });
 
-  })
+    appKudosModel.fetch();
 
 })();
 
