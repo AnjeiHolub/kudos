@@ -1,12 +1,11 @@
 (function () {
     'use strict';
     class kudosEdit {
-        constructor({el, addReadyItem}) {
+        constructor({el}) {
             this.el = el;
             this.data = null;
             this._onClick = this._onClick.bind(this);
             this.editField = this.el.querySelector('.edit-field');
-            this._addReadyItem = addReadyItem;
             this.switchEditor();
             this.render();
             this.form = this.el.querySelector('.form');
@@ -51,10 +50,10 @@
 
             function getRenderKudos(data) {
                 if (data !== null) {
-                    return `<div class="kudos kudos-edit ${data.className}">
+                    return `<div class="kudos-edit ${data.className}">
                   </div>`;
                 } else {
-                    return `<div class="kudos kudos-edit">
+                    return `<div class="kudos-edit">
                   </div>`;
                 }
             };
@@ -69,6 +68,14 @@
                                   </div>`;
             this.editKudosArea = this.el.querySelector('.kudos-edit');
         }
+
+        /**
+         * Generowanie unikatowego ID
+         */
+
+        generateId() {
+          return  '_'  +  Math.random().toString(36).substr(2,9);
+        };
 
         /**
          * Zamknięcie obszaru edycji
@@ -95,7 +102,6 @@
             event.preventDefault();
 
             let item = event.target;
-
             switch (item.dataset.action) {
                 case 'add':
                     this._onAddClick(item);
@@ -109,9 +115,9 @@
 
         _onAddClick(item) {
             this.data.fieldsContent = this._handelContentEditKudos();
+            this.data.id = this.generateId();
             this.close();
-            console.log(this.data);
-            this._addReadyItem(this.data);
+            this.trigger('kudosReadyTransfer', this.data);
         }
 
         /**
@@ -123,10 +129,23 @@
             return Array.prototype.map.call(contents, function (item) {
                 return {
                     content: item.innerHTML,
-                    top: item.offsetTop / 3,
-                    left: item.offsetLeft / 3
+                    top: item.offsetTop,
+                    left: item.offsetLeft
                 };
             });
+        }
+
+        on (name, callback) {
+            this.el.addEventListener(name, callback);
+        }
+
+        trigger (name, data) {
+            let widgetEvent = new CustomEvent(name, {
+                bubbles: true,
+                detail: data
+            });
+
+            this.el.dispatchEvent(widgetEvent);
         }
 
 

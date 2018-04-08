@@ -8,9 +8,8 @@
       this._renderKudosEditArea = renderKudosEditArea;
       this.toolsField = el.querySelector('.tools-field');
       this.data;
-      this.render();
       this.tools = el.querySelector('.tools');
-      this.form = this.tools.querySelector('.form');
+      this.form;
       this._initEvents();
 
     }
@@ -21,16 +20,26 @@
 
     render () {
 
-      function getReadyKudos (item) {
+      function getReadyKudos (data) {
+        let item;
+
+        if (data) {
+          item = data["item-ready"];
+        }
 
         function getContentItem (fieldsContent) {
-          return fieldsContent.map(function(item) {
-            return `<p class="content" style="top: ${item.top}px; left: ${item.left}px">${item.content}</p>`
-                  }).join('');
+          if (fieldsContent) {
+            return fieldsContent.map(function(item) {
+              return `<p class="content" style="top: ${item.top}px; left: ${item.left}px" ">${item.content}</p>`
+                    }).join('');
+          } else {
+            return '';
+          }
+          
         }
 
         if (item) {
-          return `<div class="kudos ${item.className}" data-action="attach">
+          return `<div class="${item.className}" data-id="${item.id}" data-action="attach" data-status="ready">
                     ${getContentItem(item.fieldsContent)}
                   </div>`;
         } else {
@@ -43,21 +52,28 @@
 
       this.toolsField.innerHTML = `<div class="tools">
                                     <div class="kudos-types clearfix">
-                                      <div class="kudos-option kudos-thanks" data-action="select"></div>
-                                      <div class="kudos-option kudos-happy" data-action="select"></div>
-                                      <div class="kudos-option kudos-goodwork" data-action="select"></div>
+                                      <div class="kudos-option">
+                                        <div class="kudos kudos-thanks" data-action="select"></div>
+                                      </div>
+                                      <div class="kudos-option">
+                                        <div class="kudos kudos-happy" data-action="select"></div>
+                                      </div>
+                                      <div class="kudos-option">
+                                        <div class="kudos kudos-goodwork" data-action="select"></div>
+                                      </div>
                                     </div>
-                                    <div class="area-ready-kudos" data-status="tools">
-                                      ${getReadyKudos(this.data)}
-                                    </div>
-                                    <div class="trash" data-status="trash">
-                                      Trash
+                                    <div class="tools-content">
+                                      <div class="area-ready-kudos" data-status="tools">
+                                        ${getReadyKudos(this.data)}
+                                      </div>
+                                      <div class="trash" data-status="trash">
+                                        Trash
+                                      </div>
                                     </div>
                                   </div>`;
-      if (this.data) {
-        this.toolsField.querySelector('.kudos').data = this.data;
+      if (this.data["item-ready"]) {
+        this.toolsField.querySelector('.kudos').data = this.data["item-ready"];
       }
-      
     }
 
     /**
@@ -85,6 +101,33 @@
     }
 
     /**
+     * Metoda odświeżenia danych
+     */
+
+    refreshData(data) {
+      this.data = data;
+      this.render();
+    }
+
+
+    /**
+     * Metoda ustawienia danych
+     */
+
+    setData(data) {
+      this.data = data;
+    }
+
+    /**
+     * Metoda otrzymania danych
+     */
+
+    getData () {
+        return this.data;
+    }
+
+
+    /**
      * Wybór opcji elementu do edycji
      */
 
@@ -99,7 +142,8 @@
      */
 
     _addReadyItem (item) {
-      this.data = item;
+      this.data["item-ready"] = item;
+      this.trigger('addToKudosReady');
       this.render();
     }
 
@@ -110,6 +154,19 @@
     _removeReadyItem () {
       this.data = null;
       this.render();
+    }
+
+    on (name, callback) {
+        this.el.addEventListener(name, callback);
+    }
+
+    trigger (name, data) {
+        let widgetEvent = new CustomEvent(name, {
+            bubbles: true,
+            detail: data
+        });
+
+        this.el.dispatchEvent(widgetEvent);
     }
   }
 

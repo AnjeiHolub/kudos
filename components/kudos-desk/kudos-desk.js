@@ -6,7 +6,7 @@
             this.el = el;
             this.data = null;
             this._onClick = this._onClick.bind(this);
-
+            this._onWheel = this._onWheel.bind(this);
             this.tableField = el.querySelector('.table-field');
 
             this.table = el.querySelector('.table');
@@ -20,7 +20,6 @@
          */
 
         render() {
-
             function getRenderKudos(data) {
 
                 function getContentItem(fieldsContent) {
@@ -30,7 +29,7 @@
                 }
 
                 return data.items.map(function (item, index) {
-                    return `<div class="kudos ${item.className}" data-index="${index}" data-action="attach" style="top: ${item.coordinates.top}px; left: ${item.coordinates.left}px">
+                    return `<div class="${item.className}" data-index="${index}" data-status="added" data-action="attach" style="top: ${item.coordinates.top}px; left: ${item.coordinates.left}px">
                     ${getContentItem(item.fieldsContent)}
                   </div>`
                 }).join('');
@@ -39,7 +38,7 @@
 
             this.tableField.innerHTML = `<div class="table" data-status="desk">
                                     <h2 class="title">${this.data.title}</h2>
-                                    ${getRenderKudos(this.data)}
+                                    ${this.data.items ? getRenderKudos(this.data) : ""}
                                   </div>`;
 
             this.tableField.querySelectorAll('.kudos').forEach((kudos, index) => {
@@ -54,6 +53,7 @@
 
         _initEvents() {
             this.el.addEventListener('click', this._onClick);
+            window.addEventListener('wheel', this._onWheel);
         }
 
         /**
@@ -64,6 +64,40 @@
             event.preventDefault();
 
             let item = event.target;
+        }
+
+        /**
+         * Metoda przetwarzania eventu 'scroll'
+         */
+
+        _onWheel(event) {
+            event.preventDefault();
+            let item = event.target;
+
+            switch (item.dataset.status) {
+              case 'desk':
+                this._onWheelAction(event, item);
+                break;
+            } 
+        }
+
+        /**
+         * Akcja po scrollowaniu
+         */
+
+        _onWheelAction(event, item) {
+          let max = 10,
+              min = 0.3,
+              state = item.style.transform,
+              wheel;
+          if (event.wheelDelta > 0) {
+            if (!state) {
+              state = 1;
+            }
+            wheel = state + 0.03 + "";
+            console.log(wheel);
+            item.style.transform = `scale(${wheel})`;
+          }
         }
 
         /**
@@ -109,12 +143,20 @@
         }
 
         /**
+         * Metoda odświeżenia danych
+         */
+
+        refreshData(data) {
+          this.data = data;
+          this.render();
+        }
+
+        /**
          * Metoda ustawienia danych
          */
 
         setData (data) {
             this.data = data;
-            this.render();
         }
 
         /**

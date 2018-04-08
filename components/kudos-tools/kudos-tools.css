@@ -4,45 +4,31 @@
   margin-bottom: 30px;
 }
 
+.tools .kudos {
+  transform: scale(0.333) translate(-100%,-100%);
+}
+
 .kudos-option {
-  float: left;
-  width: 100px;
+  position: relative;
   height: 100px;
-  margin-right: 20px;
-  margin-bottom: 20px;
-}
-
-.kudos-thanks {
-  background-color: #435;
-}
-
-.kudos-happy {
-  background-color: #678;
-}
-
-.kudos-goodwork {
-  background-color: #345;
+  width: 100px;
 }
 
 .area-ready-kudos {
-  width: 102px;
-  height: 102px;
+  width: 100px;
+  height: 100px;
   border: 1px dashed blue;
   display: inline-block;
 }
 
 .trash {
-  width: 102px;
-  height: 102px;
+  width: 100px;
+  height: 100px;
   border: 1px dashed red;
   display: inline-block;
 }
 
-.area-ready-kudos .kudos-option {
-  margin: 1px;
+.area-ready-kudos {
+  padding: 1px;
   position: relative;
-}
-
-.area-ready-kudos .kudos-option .content {
-  position: absolute;
 }

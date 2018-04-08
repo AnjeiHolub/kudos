@@ -43,16 +43,7 @@
      */
 
     let appKudosApp = new kudosApp({
-        el: document.querySelector('.container-app'),
-        moveItemKudosDesk: function (item, coordinates) {
-            appKudosDesk._moveItem(item, coordinates);
-        },
-        removeReadyItemKudosTools: function () {
-            appKudosTools._removeReadyItem();
-        },
-        removeItemKudosDesk: function (item) {
-            appKudosDesk._removeItem(item);
-        }
+        el: document.querySelector('.container-app')
     });
 
     /**
@@ -60,10 +51,7 @@
      */
 
     let appKudosEdit = new kudosEdit({
-        el: document.querySelector('.container-app'),
-        addReadyItem (item) {
-            appKudosTools._addReadyItem(item);
-        }
+        el: document.querySelector('.container-app')
     })
 
     /**
@@ -77,24 +65,47 @@
     });
 
     /**
-     * Zadeklorowanie "zdarzenia" ustawienia danych w aplikacji oraz akcji, która będzie wywołana (callback)
+     * Zadeklorowanie "zdarzenia" ustawienia danych w aplikacji, renderowania oraz akcji, która będzie wywołana (callback)
      */
 
     appKudosModel.on('update', (data) => {
         appKudosDesk.setData(data);
+        appKudosTools.setData(data);
+        appKudosApp.setData(data);
+        appKudosDesk.render();
+        appKudosTools.render();
     });
 
     /**
      * Zadeklorowanie "zdarzenia" dodania kudosa do tablicy oraz akcji, która będzie wywołana (callback)
      */
 
-    appKudosApp.on('add', (event) => {
-        let data = event.detail;
-        appKudosDesk._addItem(data);
-
-        appKudosModel.setData(appKudosDesk.getData());
+    appKudosApp.on('refreshData', (event) => {
+        appKudosTools.refreshData(appKudosTools.getData());
+        appKudosDesk.refreshData(appKudosTools.getData());
+        appKudosModel.setData(appKudosTools.getData());
         appKudosModel.save();
     });
+
+    /**
+     * Zadeklorowanie "zdarzenia" dodania kudosa do tablicy oraz akcji, która będzie wywołana (callback)
+     */
+
+    appKudosTools.on('addToKudosReady', (event) => {
+        appKudosApp.setData(appKudosTools.getData());
+        appKudosDesk.setData(appKudosTools.getData());
+        appKudosModel.setData(appKudosTools.getData());
+        appKudosModel.save();
+    });
+
+    /**
+     * Zadeklorowanie "zdarzenia" dodania kudosa do schowka (status "gotowy"), która będzie wywołana (callback)
+     */
+
+     appKudosEdit.on('kudosReadyTransfer', (event) => {
+        let data = event.detail;
+        appKudosTools._addReadyItem(data);
+     });
 
     appKudosModel.fetch();
 

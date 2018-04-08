@@ -1,12 +1,14 @@
 (function () {
     'use strict';
 
-    let resources = "https://kudos-f16.firebaseio.com/data.json";
+    //let resources = "https://kudos-f16.firebaseio.com/data.json";
+    let resources = "../../data/kudos-f16-export.json";
 
 
     class kudosModel {
         constructor () {
             this._handlers = {};
+            this.data = null;
         }
 
         /**

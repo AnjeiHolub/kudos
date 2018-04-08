@@ -2,19 +2,11 @@
   background-color: #a0522d;
   height: 500px;
   margin: 50px;
+  transform: scale(1);
 }
 
 .table .title {
   text-align: center;
-}
-
-.kudos {
-  width: 100px;
-  height: 100px;
-  background-color: #fafafa;
-  display: inline-block;
-  float: left;
-  position: absolute;
 }
 
 .type {
@@ -27,6 +19,3 @@
   padding: 10px;
 }
 
-.kudos .content {
-  position: absolute;
-}

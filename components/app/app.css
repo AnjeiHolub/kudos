@@ -17,8 +17,6 @@ html {
   float: left;
 }
 
-
-
 .tools-field {
   width: 30%;
   float: left;
@@ -29,3 +27,30 @@ html {
   display: none!important;
 }
 
+.kudos {
+  width: 100px;
+  height: 100px;
+  background-color: #fafafa;
+  display: inline-block;
+  float: left;
+  position: absolute;
+  float: left;
+  width: 300px;
+  height: 300px;
+}
+
+.kudos-thanks {
+  background-color: #435;
+}
+
+.kudos-happy {
+  background-color: #678;
+}
+
+.kudos-goodwork {
+  background-color: #345;
+}
+
+.kudos .content {
+  position: absolute;
+}
