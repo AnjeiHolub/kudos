@@ -94,7 +94,7 @@
          */
 
         moveKudosOnBoard() {
-            for (let i = 0, length = this.data.items.length; i <=length; i = i + 1) {
+            for (let i = 0, length = this.data.items.length; i < length; i = i + 1) {
                 if (this.data.items[i].id === this.dragObject.avatar.dataset.id) {
                     this.data.items[i].coordinates = this.dragObject.avatar.coordinates;
                 }

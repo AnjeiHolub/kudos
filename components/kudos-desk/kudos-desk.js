@@ -29,7 +29,7 @@
                 }
 
                 return data.items.map(function (item, index) {
-                    return `<div class="${item.className}" data-index="${index}" data-status="added" data-action="attach" style="top: ${item.coordinates.top}px; left: ${item.coordinates.left}px">
+                    return `<div class="${item.className}" data-id="${item.id}" data-index="${index}" data-status="added" data-action="attach" style="top: ${item.coordinates.top}px; left: ${item.coordinates.left}px">
                     ${getContentItem(item.fieldsContent)}
                   </div>`
                 }).join('');
