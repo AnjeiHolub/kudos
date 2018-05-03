@@ -141,7 +141,7 @@
 
                 // zaczynamy przesunięcie
                 this.dragObject.avatar = this.createAvatar(event); // tworzymy avatar
-                if (!this.dragObject.avatar) { // отмена переноса, нельзя "захватить" за эту часть элемента
+                if (!this.dragObject.avatar) { // anulowanie przeniesienia, nie można złapać element za tą część
                     dragObject = {};
                     return;
                 }
@@ -152,9 +152,9 @@
                 this.dragObject.shiftX = this.dragObject.downX - coords.left;
                 this.dragObject.shiftY = this.dragObject.downY - coords.top;
 
-                this.startDrag(event); // отобразить начало переноса
+                this.startDrag(event); // pokazać początek przesunięcia obiektu
             }
-            // отобразить перенос объекта при каждом движении мыши
+            // wyświetlić przesunięcie obiektu przy każdym ruchu myszki
             this.dragObject.avatar.style.left = event.pageX - this.dragObject.shiftX + 'px';
             this.dragObject.avatar.style.top = event.pageY - this.dragObject.shiftY + 'px';
 
@@ -162,18 +162,18 @@
         }
 
         createAvatar(event) {
-            // запомнить старые свойства, чтобы вернуться к ним при отмене переноса
+            // zapamiętać stare właściwości, żeby przewrócić je przy anulowaniu przesunięcia obiektu
             var avatar = this.dragObject.elem;
             var old = {
                 parent: avatar.parentNode,
                 nextSibling: avatar.nextSibling,
-                position: avatar.position || '',
-                left: avatar.left || '',
-                top: avatar.top || '',
-                zIndex: avatar.zIndex || ''
+                position: avatar.style.position || '',
+                left: avatar.style.left || '',
+                top: avatar.style.top || '',
+                zIndex: avatar.style.zIndex || ''
             };
 
-            // функция для отмены переноса
+            // funkcja dla anulowania przesunięcia obiektu
             avatar.rollback = function() {
                 old.parent.insertBefore(avatar, old.nextSibling);
                 avatar.style.position = old.position;
@@ -188,19 +188,19 @@
         startDrag(event) {
             var avatar = this.dragObject.avatar;
 
-            // инициировать начало переноса
+            // initializowanie początku przesunięcia obiektu
             document.body.appendChild(avatar);
             avatar.style.zIndex = 9999;
             avatar.style.position = 'absolute';
         }
 
         _onMouseUp(event) {
-            if (this.dragObject.avatar) { // если перенос идет
+            if (this.dragObject.avatar) { // jeżeli przesunięcie jest w ciągu
               this.finishDrag(event);
             }
 
-            // перенос либо не начинался, либо завершился
-            // в любом случае очистим "состояние переноса" dragObject
+            // przesunięcie albo nie rozpoczeło się, albo skończyło się
+            // w każdym bądź razie wyczyścimy "stan przesunięcia" dragObject
             this.dragObject = {};
         }
 
@@ -215,17 +215,17 @@
         }
 
         findDroppable(event) {
-            // спрячем переносимый элемент
+            // schowamy przenoszony element
             this.dragObject.avatar.hidden = true;
 
-            // получить самый вложенный элемент под курсором мыши
+            // wykryć najbardziej zagnieżdżony elemnt znajdujący się pod kursorem myszki
             var elem = document.elementFromPoint(event.clientX, event.clientY);
 
-            // показать переносимый элемент обратно
+            // pokazać przenoszony element z powrotem
             this.dragObject.avatar.hidden = false;
 
             if (elem == null) {
-              // такое возможно, если курсор мыши "вылетел" за границу окна
+              // to jest możliwe, w przypadku gdy kursor "wyleciał" za granicy okna przeglądarki
               return null;
             }
 
@@ -240,15 +240,18 @@
 
         onDragEnd (dragObject, dropElem) {
             if (this.dragObject.avatar.endPoint === "desk") { // mouseup odbył się nad tablicą
+                let coords = this.getCoords(document.querySelector('[data-status="desk"]')); 
+
                 this.dragObject.avatar.coordinates = {
-                    left: event.pageX,
-                    top: event.pageY
+                    left: event.pageX - this.dragObject.shiftX - coords.left,
+                    top: event.pageY - this.dragObject.shiftY - coords.top
                 };
-                if (this.dragObject.startPoint === "tools") { // poruszanym elementem jest element ze stanu "gotowy"
+                if (this.dragObject.avatar.startPoint === "tools") { // poruszanym elementem jest element ze stanu "gotowy"
                     this.addToBoard();
                 } else { // poruszanym elementem jest elementem z tablicy
                     this.moveKudosOnBoard();
                 }
+                this.dragObject.elem.remove();
                 this.trigger('refreshData');
             } else if (this.dragObject.avatar.endPoint === "trash") {
                 this.removeKudos(this.dragObject.elem);

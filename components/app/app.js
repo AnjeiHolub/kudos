@@ -81,9 +81,9 @@
      */
 
     appKudosApp.on('refreshData', (event) => {
-        appKudosTools.refreshData(appKudosTools.getData());
-        appKudosDesk.refreshData(appKudosTools.getData());
-        appKudosModel.setData(appKudosTools.getData());
+        appKudosTools.refreshData(appKudosApp.getData());
+        appKudosDesk.refreshData(appKudosApp.getData());
+        appKudosModel.setData(appKudosApp.getData());
         appKudosModel.save();
     });
 

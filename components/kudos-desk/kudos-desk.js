@@ -88,13 +88,20 @@
         _onWheelAction(event, item) {
           let max = 10,
               min = 0.3,
-              state = item.style.transform,
+              state = item.style.transform.slice(6, -1),
               wheel;
           if (event.wheelDelta > 0) {
             if (!state) {
               state = 1;
             }
-            wheel = state + 0.03 + "";
+            wheel = +state + 0.03 + "";
+            console.log(wheel);
+            item.style.transform = `scale(${wheel})`;
+          } else if (event.wheelDelta < 0) {
+            if (!state) {
+              state = 1;
+            }
+            wheel = +state - 0.03 + "";
             console.log(wheel);
             item.style.transform = `scale(${wheel})`;
           }

@@ -5,18 +5,18 @@
 }
 
 .tools .kudos {
-  transform: scale(0.333) translate(-100%,-100%);
+  transform: scale(0.5) translate(-50%,-50%);
 }
 
 .kudos-option {
   position: relative;
-  height: 100px;
-  width: 100px;
+  height: 150px;
+  width: 150px;
 }
 
 .area-ready-kudos {
-  width: 100px;
-  height: 100px;
+  width: 75px;
+  height: 75px;
   border: 1px dashed blue;
   display: inline-block;
 }
