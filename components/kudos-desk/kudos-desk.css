@@ -3,6 +3,8 @@
   height: 500px;
   margin: 50px;
   transform: scale(1);
+  transition: all 0.3s ease-out;
+  transform-style: preserve-3d;
 }
 
 .table .title {
