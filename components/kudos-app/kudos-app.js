@@ -38,14 +38,6 @@
             document.addEventListener('mouseup', this._onMouseUp);
         }
 
-        // onDragEnd (dragObject, dropElem) {
-
-        // }
-
-        // onDragCancel (dragObject) {
-
-        // }
-
         /**
          * Metoda przetwarzania eventu 'mousedown'
          */
@@ -54,12 +46,16 @@
             event.preventDefault();
             let item = event.target;
 
-            switch (item.dataset.action) {
-                case 'attach':
-                    if (event.which == 1) {
-                        this._onMouseDownAttach(item, event);
-                    }
-                    break;
+            if (event.which !== 1) {
+                return;
+            }
+
+            while (item != document) {
+              if (item.dataset.action === 'attach') {
+                this._onMouseDownAttach(item, event);
+                return;
+              }
+              item = item.parentNode;
             }
         }
 
@@ -155,7 +151,7 @@
                 this.startDrag(event); // pokazać początek przesunięcia obiektu
             }
             // wyświetlić przesunięcie obiektu przy każdym ruchu myszki
-            this.dragObject.avatar.style.left = event.pageX - this.dragObject.shiftX + 'px';
+            this.dragObject.avatar.style.left = event.pageX  - this.dragObject.shiftX + 'px';
             this.dragObject.avatar.style.top = event.pageY - this.dragObject.shiftY + 'px';
 
             return false;
@@ -179,7 +175,7 @@
                 avatar.style.position = old.position;
                 avatar.style.left = old.left;
                 avatar.style.top = old.top;
-                avatar.style.zIndex = old.zIndex
+                avatar.style.zIndex = old.zIndex;
             };
 
             return avatar;
@@ -188,10 +184,12 @@
         startDrag(event) {
             var avatar = this.dragObject.avatar;
 
+            var parent = this.dragObject.elem.parentElement;
             // initializowanie początku przesunięcia obiektu
             document.body.appendChild(avatar);
             avatar.style.zIndex = 9999;
             avatar.style.position = 'absolute';
+            this.trigger('startDrag');
         }
 
         _onMouseUp(event) {
@@ -212,6 +210,7 @@
             } else {
               this.onDragEnd(this.dragObject, dropElem);
             }
+            this.trigger('finishDrag');
         }
 
         findDroppable(event) {
@@ -240,11 +239,36 @@
 
         onDragEnd (dragObject, dropElem) {
             if (this.dragObject.avatar.endPoint === "desk") { // mouseup odbył się nad tablicą
-                let coords = this.getCoords(document.querySelector('[data-status="desk"]')); 
+                let deskElement = document.querySelector('[data-status="desk"]'),
+                    coordsDesk = this.getCoords(deskElement),
+                    dragObject = {}; 
+
+
+
+                dragObject = {
+                    left: event.pageX - this.dragObject.shiftX - coordsDesk.left,
+                    top: event.pageY - this.dragObject.shiftY - coordsDesk.top
+                };
+
+                // przenuszony element występuje za górną krawędź - ustawić element w dół górnej krawędzi
+                if (dragObject.top < 0) dragObject.top = 0;
+
+                // przenuszony element występuje za lewą krawędź - ustawić element w dół lewej krawędzi
+                if (dragObject.left < 0) dragObject.left = 0;
+
+                // przenuszony element występuje za prawą krawędź - ustawić element w dół prawej krawędzi
+                if (dragObject.left + this.dragObject.avatar.clientWidth > deskElement.clientWidth) {
+                    dragObject.left = deskElement.clientWidth - this.dragObject.avatar.clientWidth;
+                }
+
+                // przenuszony element występuje za dolną krawędź - ustawić element w dół dolnej krawędzi
+                if (dragObject.top + this.dragObject.avatar.clientHeight > deskElement.clientHeight) {
+                    dragObject.top = deskElement.clientHeight - this.dragObject.avatar.clientHeight;
+                }
 
                 this.dragObject.avatar.coordinates = {
-                    left: event.pageX - this.dragObject.shiftX - coords.left,
-                    top: event.pageY - this.dragObject.shiftY - coords.top
+                    left: dragObject.left,
+                    top: dragObject.top
                 };
                 if (this.dragObject.avatar.startPoint === "tools") { // poruszanym elementem jest element ze stanu "gotowy"
                     this.addToBoard();
@@ -264,6 +288,7 @@
 
         onDragCancel (dragObject) {
             this.dragObject.avatar.rollback();
+            this.trigger('cancelDrag');
         }
         
         /**
@@ -290,48 +315,11 @@
             } else if (elem.closest('[data-status="desk"]')) {
                 this.dragObject.elem.startPoint = 'desk';
             }
+
             this.dragObject.downX = event.pageX;
             this.dragObject.downY = event.pageY;
 
             return false;
-
-            // function drag(event) {
-            //     item.style.top = event.pageY - 10 + 'px';
-            //     item.style.left = event.pageX - 10 + 'px';
-            // };
-            // item.hidden = !item.hidden;
-            // let startingPoint = document.elementFromPoint(event.pageX - 10, event.pageY - 10);
-            // item.hidden = !item.hidden;
-            // item.style.position = 'absolute';
-            // item.style.top = event.pageY - 10 + 'px';
-            // item.style.left = event.pageX - 10 + 'px';
-            // this.el.addEventListener('mousemove', drag);
-            // item.onmouseup = (event) => {
-            //     item.hidden = !item.hidden;
-            //     let endPoint = document.elementFromPoint(event.pageX - 10, event.pageY - 10);
-            //     item.hidden = !item.hidden;
-            //     if (endPoint.closest('[data-status="desk"]') && startingPoint.closest('[data-status="tools"]')) { // mouseup odbył się nad tablicą
-            //         item.data.coordinates = {
-            //             left: event.pageX,
-            //             top: event.pageY
-            //         };
-            //         if (this.checkReadyStatus(item) === true) { // poruszanym elementem jest element ze stanu "gotowy"
-            //             this.addToBoard();
-            //         } else { // poruszanym elementem jest elementem z tablicy
-            //             this.moveKudosOnBoard(item);
-            //         }
-            //         this.trigger('refreshData');
-            //         item.removeEventListener('mousedown', this._onMouseDown);
-            //         this.el.removeEventListener('mousemove', drag);
-            //         item.onmouseup = null;
-            //     } else if (endPoint.closest('[data-status="trash"]')) {
-            //         this.removeKudos(item);
-            //         this.trigger('refreshData');
-            //         item.remove();
-            //     } else {
-
-            //     }
-            // }
         }
 
         on (name, callback) {

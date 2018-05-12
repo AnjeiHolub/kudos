@@ -8,10 +8,11 @@
             this._onClick = this._onClick.bind(this);
             this._onWheel = this._onWheel.bind(this);
             this._onMouseMove = this._onMouseMove.bind(this);
+            this._onMouseUp = this._onMouseUp.bind(this);
+            this._onMouseDown = this._onMouseDown.bind(this);
             this.tableField = el.querySelector('.table-field');
-
-            this.table = el.querySelector('.table');
-
+            this.renderingProcess = true; // rendering jest w trakcie
+            this.deskParametr = {};
             this._initEvents();
 
         }
@@ -21,6 +22,8 @@
          */
 
         render() {
+            this.renderingProcess = true;
+
             function getRenderKudos(data) {
 
                 function getContentItem(fieldsContent) {
@@ -37,15 +40,60 @@
 
             };
 
-            this.tableField.innerHTML = `<div class="table" data-status="desk">
+            this.tableField.innerHTML = `<div class="table" data-status="desk" style="transform: scale(1)">
                                     <h2 class="title">${this.data.title}</h2>
                                     ${this.data.items ? getRenderKudos(this.data) : ""}
+                                    <div class="scene">
+                                      <div class="cube">
+                                        <div class="cube__face cube__face--front">front</div>
+                                        <div class="cube__face cube__face--back">back</div>
+                                        <div class="cube__face cube__face--right">right</div>
+                                        <div class="cube__face cube__face--left">left</div>
+                                        <div class="cube__face cube__face--top">top</div>
+                                        <div class="cube__face cube__face--bottom">bottom</div>
+                                      </div>
+                                    </div>
                                   </div>`;
 
             this.tableField.querySelectorAll('.kudos').forEach((kudos, index) => {
                 kudos.data = this.data.items[index];
-        })
-            ;
+            });
+
+            this.restoreState();
+
+            this.renderingProcess = false; // rendering skończył się
+        }
+        
+        /**
+         * Podpięcie nasłuchiwaczy eventów
+         */
+
+        restoreState() {
+
+            function getStylesState(deskParametr) {
+              var style = '';
+
+              if (Object.keys(deskParametr).length !== 0) {
+                //style = 'style="transform:';
+              } else {
+                return '';
+              }
+
+              for (var properties in deskParametr) {
+                if (deskParametr.hasOwnProperty(properties)) {
+                  style += ' ' +  properties + '(' + deskParametr[properties] + ')';
+                }
+              }
+
+              //style += ';"';
+
+              return style;
+            }
+
+            // po to żeby była widoczna animacja przewrucenia stanu, po przesunięciu elementu
+            setTimeout(() => {
+              this.tableField.querySelector('.table').style.transform = getStylesState(this.deskParametr);
+            }, 0);
         }
 
         /**
@@ -55,7 +103,45 @@
         _initEvents() {
             this.el.addEventListener('click', this._onClick);
             window.addEventListener('wheel', this._onWheel);
-            this.el.addEventListener('mousemove', this._onMouseMove);
+            //this.el.addEventListener('mousemove', this._onMouseMove);
+
+
+            document.addEventListener('mousemove', this._onMouseMove);
+            document.addEventListener('mousedown', this._onMouseDown);
+            document.addEventListener('mouseup', this._onMouseUp);
+        }
+
+        /**
+         * Metoda przetwarzania eventu 'mousedown'
+         */
+
+        _onMouseDown(event) {
+            event.preventDefault();
+            let item = event.target;
+
+            if (event.which !== 1) {
+                return;
+            }
+
+            while (item != document) {
+              if (item.classList.contains('table-field')) {
+                this._onMouseDownAttach(item, event);
+                return;
+              }
+              item = item.parentNode;
+            }
+        }
+
+        _onMouseUp(event) {
+            this.test = false;
+        }
+
+        /**
+         * Złapanie elementu do przeniesienia na tablice
+         */
+
+        _onMouseDownAttach(item, event) {
+            this.test = true;
         }
 
         /**
@@ -76,11 +162,17 @@
             event.preventDefault();
             let item = event.target;
 
-            switch (item.dataset.status) {
-              case 'desk':
+            while (item != document) {
+              if (item.dataset.status === 'desk') {
                 this._onMouseMoveAction(event, item);
-                break;
-            } 
+                return;
+              }
+              item = item.parentNode;
+            }
+
+            if (!this.renderingProcess) {
+              this.flatState();  
+            }
         }
 
         /**
@@ -91,41 +183,93 @@
             event.preventDefault();
             let item = event.target;
 
-            switch (item.dataset.status) {
-              case 'desk':
-                this._onWheelAction(event, item);
-                break;
-            } 
+            while (item != document) {
+              if (item.dataset.status === 'desk') {
+                this._onScaleAction(event, item);
+                return;
+              }
+              item = item.parentNode;
+            }
+        }
+
+        /**
+         * Stan płaski bez nachyleń
+         */
+
+        flatState() {
+          let item = document.querySelector('[data-status="desk"]');
+          item.style.transform = item.style.transform.replace(/rotateY(\((-?\d+(?:\.\d*)?)deg)\)/g,`rotateY(0deg)`);
+          item.style.transform = item.style.transform.replace(/rotateX(\((-?\d+(?:\.\d*)?)deg)\)/g,`rotateX(0deg)`);
+        }
+
+        /**
+         * Stan początkowy "zerowy"
+         */
+
+        initialState() {
+          let item = document.querySelector('[data-status="desk"]');
+          this.saveScaleState(item);
+          item.style.transform = 'scale(1) rotateX(0deg) rotateY(0deg)'; 
+        }
+
+        /**
+         * Stan początkowy "zerowy" (w momencie przenoszenia kudosa) oraz blokada "mousmowe"
+         */
+
+        mouseMoveBlock() {
+          this.initialState();
+          this.el.removeEventListener('mousemove', this._onMouseMove);
+        }
+
+        /**
+         * Odblokowanie "mousmowe"
+         */
+
+        mouseMoveUnBlock() {
+          this.el.addEventListener('mousemove', this._onMouseMove);
         }
 
         /**
          * Akcja po scrollowaniu
          */
 
-        _onWheelAction(event, item) {
+        _onScaleAction(event, item) {
 
           if (item.style.transform.indexOf('scale') < 0) { //jeżeli nie ma tego stylu, dodaj
             item.style.transform = item.style.transform + 'scale(1)';
           }
 
-          let maxWheel = 1.2, //maksymalne przyżenie
+          let maxWheel = 1.2, //maksymalne przybliżenie
               minWheel = 0.3, //minimalne oddalenie
-              itemStyleArray = item.style.transform.split(/[()]+/), //rozbicie na tablice 'stylu' transform po nawaiasach 
-              positionScale = itemStyleArray.indexOf(' scale'), // pozycja 'scale' w tablicy
-              scale = itemStyleArray[positionScale + 1], //
-              wheel;
+              itemStyleArray = item.style.transform.replace(/\s+/g, '').replace('transform:', '').split(/[()]+/), //usuwamy wszystkie "whitespace", usuwamy "transform:", rozbijamy na tablice 'stylu' transform po nawaiasach 
+              positionScale = itemStyleArray.indexOf('scale'), // pozycja 'scale' w tablicy
+              scaleElement = itemStyleArray[positionScale + 1], //
+              scale;
 
-          if (event.wheelDelta > 0) { //przybliżenia
-            if (+scale <= maxWheel) {
-              wheel = +scale + 0.03 + "";
+          if (event.wheelDelta > 0) { //przybliżenie
+            if (+scaleElement <= maxWheel) {
+              scale = +scaleElement + 0.03 + "";
             }
           } else if (event.wheelDelta < 0) { //oddalenie
-            if (+scale >= minWheel) {
-              wheel = +scale - 0.03 + "";
+            if (+scaleElement >= minWheel) {
+              scale = +scaleElement - 0.03 + "";
             }
           }
           
-          item.style.transform = item.style.transform.replace(/scale(\((-?\d+(?:\.\d*)?))\)/g,`scale(${wheel})`);
+          item.style.transform = item.style.transform.replace(/scale(\((-?\d+(?:\.\d*)?))\)/g,` scale(${scale})`);
+          this.saveScaleState(item);
+        }
+
+        /**
+         * Zapisanie stanu - wartośc przybliżenia/oddalenia
+         */
+
+        saveScaleState(item) {
+          let itemStyleArray = item.style.transform.replace(/\s+/g, '').replace('transform:', '').split(/[()]+/), //usuwamy wszystkie "whitespace", usuwamy "transform:", rozbijamy na tablice 'stylu' transform po nawaiasach 
+              positionScale = itemStyleArray.indexOf('scale'), // pozycja 'scale' w tablicy
+              scaleElement = itemStyleArray[positionScale + 1];
+
+          this.deskParametr.scale = scaleElement; 
         }
 
         /**
@@ -133,20 +277,33 @@
          */
 
         _onMouseMoveAction(event, item) {
-            let rotateY,
+            if (this.test) {
+              let rotateY,
                 rotateX,
-                transform = item.style.transform;
+                transform = item.style.transform,
+                itemStyleArray = transform.replace(/\s+/g, '').replace('transform:', '').split(/[()]+/), //usuwamy wszystkie "whitespace", usuwamy "transform:", rozbijamy na tablice 'stylu' transform po nawaiasach 
+                positionScale = itemStyleArray.indexOf('scale'), // pozycja 'scale' w tablicy
+                scaleElement = itemStyleArray[positionScale + 1];
 
-            if (item.style.transform.indexOf('rotateY') < 0) { //jeżeli nie ma tego stylu, dodaj
-              item.style.transform = item.style.transform + 'rotateY(0)';
+              if (item.style.transform.indexOf('scale') < 0) { //jeżeli nie ma tego stylu, dodaj
+                item.style.transform = item.style.transform + 'scale(1)';
+              }
+              if (item.style.transform.indexOf('rotateY') < 0) { //jeżeli nie ma tego stylu, dodaj
+                item.style.transform = item.style.transform + 'rotateY(0)';
+              }
+              if (item.style.transform.indexOf('rotateX') < 0) { //jeżeli nie ma tego stylu, dodaj
+                item.style.transform = item.style.transform + 'rotateX(0)';
+              }
+              //rotateY = - (((event.x - this.getCoords(item).left)/(item.getBoundingClientRect().width/2)) - 1) * 20 * scaleElement;  // wyliczenie
+              //rotateX =  (((event.y - this.getCoords(item).top)/(item.getBoundingClientRect().height/2)) - 1) * 20 * scaleElement;  // wyliczenie
+              rotateY = event.pageX * 0.1;
+              rotateX = event.pageY * 0.1;
+              item.style.transform = item.style.transform.replace(/rotateY(\((-?\d+(?:\.\d*)?)deg)\)/g,`rotateY(${rotateY}deg)`);
+              item.style.transform = item.style.transform.replace(/rotateX(\((-?\d+(?:\.\d*)?)deg)\)/g,`rotateX(${rotateX}deg)`);
+              //this.deskParametr.rotateY = rotateY + 'deg';
+              //this.deskParametr.rotateX = rotateX + 'deg';
+
             }
-            if (item.style.transform.indexOf('rotateX') < 0) { //jeżeli nie ma tego stylu, dodaj
-              item.style.transform = item.style.transform + 'rotateX(0)';
-            }
-            rotateY = - (((event.x - this.getCoords(item).left)/(item.getBoundingClientRect().width/2)) - 1) * 15;  // wyliczenie
-            rotateX =  (((event.y - this.getCoords(item).top)/(item.getBoundingClientRect().height/2)) - 1) * 15;  // wyliczenie
-            item.style.transform = item.style.transform.replace(/rotateY(\((-?\d+(?:\.\d*)?)deg)\)/g,`rotateY(${rotateY}deg)`);
-            item.style.transform = item.style.transform.replace(/rotateX(\((-?\d+(?:\.\d*)?)deg)\)/g,`rotateX(${rotateX}deg)`);
         }
 
 

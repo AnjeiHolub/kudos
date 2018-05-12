@@ -88,6 +88,30 @@
     });
 
     /**
+     * Zadeklorowanie "zdarzenia" w momencie rozpoczęcia przesunięcia kudosa (callback)
+     */
+
+    appKudosApp.on('startDrag', (event) => {
+        appKudosDesk.mouseMoveBlock();
+    });
+
+    /**
+     * Zadeklorowanie "zdarzenia" w momencie skończenia przesunięcia kudosa (callback)
+     */
+
+    appKudosApp.on('finishDrag', (event) => {
+        appKudosDesk.mouseMoveUnBlock();
+    });
+
+     /**
+     * Zadeklorowanie "zdarzenia" w momencie anulowania przesunięcia kudosa (callback)
+     */
+
+    appKudosApp.on('cancelDrag', (event) => {
+        appKudosDesk.restoreState();
+    });
+
+    /**
      * Zadeklorowanie "zdarzenia" dodania kudosa do tablicy oraz akcji, która będzie wywołana (callback)
      */
 
