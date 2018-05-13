@@ -37,7 +37,6 @@
         let target = event.target;
         if (target === this.workingArea) {
           this._onAddClick(event);
-
         }
       }
 
@@ -57,14 +56,31 @@
        */
 
       _onAddClick(event) {
-        let input = document.createElement('input');
+        let input = document.createElement('input'),
+            typedText = document.createElement('p');
         input.classList.add('input-text-editor');
         this.workingArea.appendChild(input);
+        input.value = 'Wpisz tekst...';
         input.style.position = 'absolute';
-        input.style.top = event.pageY - input.getBoundingClientRect().top + input.offsetHeight/2 + 'px';
+        input.style.top = event.pageY - input.getBoundingClientRect().top - input.offsetHeight/2 + 'px';
         input.style.left = event.pageX - input.getBoundingClientRect().left + 'px';
         input.style.zIndex = '9999';
         this.inputTextEditor = input;
+
+        typedText.className = "content";
+        input.parentNode.insertBefore(typedText, this.inputTextEditor.nextSibling);
+        typedText.style.top = input.style.top;
+        typedText.style.left = input.style.left;
+        typedText.style.position = 'absolute';
+        typedText.style.zIndex = '-9999';
+
+        this.inputTextEditor.oninput = function() {
+          this.nextElementSibling.innerHTML = this.value;
+          this.style.width = this.nextElementSibling.clientWidth + 'px';
+        };
+
+        this.inputTextEditor.oninput();
+
         input.focus();
       }
 
@@ -84,13 +100,14 @@
        */
 
       addTypedText(target) {
-        let typedText =  document.createElement('p');
-        typedText.classList.add('content');
-        typedText.innerHTML = target.value;
-        typedText.style.position = 'absolute';
-        typedText.style.top = this.getCoordsEditInput(target).top + 'px';
-        typedText.style.left = this.getCoordsEditInput(target).left + 'px';
-        this.workingArea.replaceChild(typedText, target);
+        if (target.value === "" || target.value === "Wpisz tekst...") {
+          this.workingArea.removeChild(target.nextElementSibling);
+          this.workingArea.removeChild(target);
+          return;
+        }
+        target.nextElementSibling.style.position = 'absolute';
+        target.nextElementSibling.style.zIndex = '1';
+        this.workingArea.removeChild(target);
       }
 
       /**

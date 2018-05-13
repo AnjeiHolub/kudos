@@ -4,28 +4,31 @@
   margin-bottom: 30px;
 }
 
-.tools .kudos {
+.kudos-types .kudos {
   transform: scale(0.5) translate(-50%,-50%);
 }
 
 .kudos-option {
   position: relative;
-  height: 150px;
+  height: 100px;
   width: 150px;
 }
 
 .area-ready-kudos {
-  width: 75px;
-  height: 75px;
+  width: 250px;
+  height: 150px;
   border: 1px dashed blue;
-  display: inline-block;
+  float: left;
+  margin-right: 20px;
+  border-radius: 5px;
 }
 
 .trash {
-  width: 100px;
-  height: 100px;
+  width: 250px;
+  height: 150px;
   border: 1px dashed red;
-  display: inline-block;
+  float: left;
+  border-radius: 5px;
 }
 
 .area-ready-kudos {

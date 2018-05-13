@@ -52,6 +52,7 @@
 
       this.toolsField.innerHTML = `<div class="tools">
                                     <div class="kudos-types clearfix">
+                                      1. Wybierz kudosa
                                       <div class="kudos-option">
                                         <div class="kudos kudos-thanks" data-action="select"></div>
                                       </div>
@@ -63,11 +64,12 @@
                                       </div>
                                     </div>
                                     <div class="tools-content">
+                                      ${this.data["item-ready"] ? "2. Przenieś kudosa w dowolne miejsce na tabeli" : ""}
                                       <div class="area-ready-kudos" data-status="tools">
                                         ${getReadyKudos(this.data)}
                                       </div>
                                       <div class="trash" data-status="trash">
-                                        Trash
+                                        Kosz
                                       </div>
                                     </div>
                                   </div>`;

@@ -2,14 +2,22 @@ html {
   position: relative;
 }
 
+body {
+  background-color: rgb(240, 240, 240);
+}
+
+body, p, input {
+  font-family: "Comic Sans MS", cursive, sans-serif;
+  font-size: 16px !important;
+  line-height: 18px !important;
+  padding: 0;
+  margin: 0;
+}
+
 .clearfix:after {
   display: block;
   content: '';
   clear: both;
-}
-
-.container-app {
-      background-color: rgb(248, 248, 248);
 }
 
 .table-field {
@@ -30,28 +38,37 @@ html {
 }
 
 .kudos {
-  width: 150px;
+  width: 250px;
   height: 150px;
-  background-color: #fafafa;
+  background-color: #fff;
   display: inline-block;
   float: left;
   position: absolute;
   float: left;
+  border-radius: 5px;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  overflow: hidden;
 }
 
 .kudos-thanks {
-  background-color: #435;
+  background-image: url(../../img/1.png);
 }
 
 .kudos-happy {
-  background-color: #678;
+  background-image: url(../../img/2.png);
 }
 
 .kudos-goodwork {
-  background-color: #345;
+  background-image: url(../../img/3.png);
+
 }
 
 .kudos .content {
   position: absolute;
-  color: #fff;
+  color: #000;
+}
+
+body > .kudos {
+  box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }

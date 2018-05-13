@@ -63,7 +63,7 @@
                                       ${getRenderKudos(this.data)}
                                     </div>
                                     <form class="form">
-                                      <button data-action="add">Сохранить</button>
+                                      <button data-action="add">Zapisz</button>
                                     </form>
                                   </div>`;
             this.editKudosArea = this.el.querySelector('.kudos-edit');
