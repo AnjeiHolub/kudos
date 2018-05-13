@@ -59,6 +59,7 @@
             };
 
             this.editField.innerHTML = `<div class="edit">
+                                    <span>Kliknij w obszarze kudosa, w miejscu gdzie chcesz zostawić podziękowania</span>
                                     <div class="edit-area clearfix">
                                       ${getRenderKudos(this.data)}
                                     </div>
