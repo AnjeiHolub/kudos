@@ -17,6 +17,12 @@
   position: relative;
 }
 
+.edit span {
+  color: #fff;
+  display: block;
+  margin: 40px 0 0 40px;
+}
+
 .edit-field-hidden {
   opacity: 0;
   z-index: -1;
