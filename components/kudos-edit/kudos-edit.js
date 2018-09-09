@@ -59,12 +59,12 @@
             };
 
             this.editField.innerHTML = `<div class="edit">
-                                    <span>Kliknij w obszarze ogłoszenia, w miejscu gdzie chcesz dodać treść</span>
+                                    <span>Кликний в пределах карточки, там где хочешь разместить содержимое объявления</span>
                                     <div class="edit-area clearfix">
                                       ${getRenderKudos(this.data)}
                                     </div>
                                     <form class="form">
-                                      <button data-action="add">Zapisz</button>
+                                      <button data-action="add">Сохранить</button>
                                     </form>
                                   </div>`;
             this.editKudosArea = this.el.querySelector('.kudos-edit');
